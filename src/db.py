@@ -1,6 +1,12 @@
-# -*- coding: utf-8 -*-
 # !/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+__author__ = 'XiaoMiZhou'
+
+__date__ = '2018/1/24'
+
 import redis
+
 
 class DBClient(object):
     def __init__(self, host, username, password, port, db):

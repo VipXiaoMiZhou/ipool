@@ -1,6 +1,10 @@
 # -*- coding: utf-8 -*-
 # !/usr/bin/env python
 
+__author__ = 'XiaoMiZhou'
+
+__date__ = '2018/1/25'
+
 import time
 from threading import Thread
 
@@ -11,11 +15,17 @@ from html import KuaiDaiLiHtmlParser
 from html import XiCiDaiLiHtmlParser
 from html import XunDaiLiJsonParser
 
-host = 'localhost'
-username = None
-password = None
-port=6379
-db=0
+import configparser
+
+config = configparser.ConfigParser()
+config.read('conf/ipool.cnf')
+
+
+host = config['redis']['host']
+username = config['redis']['username']
+password = config['redis']['password']
+port= config['redis']['port']
+db= config['redis']['database']
 
 redis =  RedisClient(host=host, port=port, username=username, password=password, db=db)
 

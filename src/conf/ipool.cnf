@@ -1,0 +1,19 @@
+[server]
+host = localhost
+port = 9000
+
+[redis]
+host = localhost
+port = 6379
+username = 
+password = 
+database = 0
+expire = 2  
+
+[task]
+timeout = 10
+http_test_url = 
+https_test_url = 
+retry = 5
+
+
