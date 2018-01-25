@@ -1,10 +1,9 @@
 # -*- coding: utf-8 -*-
 # !/usr/bin/env python
 import random
-import requests
-from html import ChongDaiLiHtmlParser
 import re
-from html import KuaiDaiLiHtmlParser
+import requests
+
 from Logger import Log
 
 logger = Log.getLogger(__file__)
@@ -13,21 +12,20 @@ HTTP_TEST_URL = 'http://www.cctv.com/'
 HTTPS_TEST_URL = 'https://book.douban.com/'
 
 
-
-
 def html_downloader(url, proxy):
     if str(url).lower().startswith('https://') and str(proxy).startswith('https://'):
         proxy = {'https': proxy}
     elif str(url).lower().startswith('http://') and str(proxy).startswith('http://'):
         proxy = {'http': proxy}
     else:
-        logger.error('proxy为null或者格式不正确，不使用代理' )
+        logger.error('proxy为null或者格式不正确，不使用代理')
         proxy = None
     try:
         return requests.get(url, proxies=proxy, headers=get_head(), timeout=10).text
     except Exception as e:
-        logger.error('网页下载失败！%s',e)
+        logger.error('网页下载失败！%s', e)
     return None
+
 
 def get_head():
     return {
@@ -84,13 +82,13 @@ def check_liveness(proxy):
     """
     if proxy is None:
         return False
-    logger.info('正在检测代理%s',proxy)
+    logger.info('正在检测代理%s', proxy)
     if str(proxy).startswith("https://"):
         return html_downloader(HTTPS_TEST_URL, proxy) is not None
     elif str(proxy).startswith("http://"):
         return html_downloader(HTTP_TEST_URL, proxy) is not None
     else:
-        logger.info('代理不可用或者格式错误%s',proxy)
+        logger.info('代理不可用或者格式错误%s', proxy)
     return False
 
 
@@ -102,30 +100,6 @@ def jude_procotol(procotol):
     if http_pattern.match(str(procotol).lower()): return 1
     return None
 
-def test_log(s):
-    logger.info(s)
-
-
 if __name__ == '__main__':
-    # proxy = 'http://27.44.78.149:8080'
-    # print(check_liveness(proxy))
-    # html = html_download(HTTP_TEST_URL, proxy)
-
-    # for i in range(0,1000):
-    # html = html_downloader('https://www.kuaidaili.com/free/', None)
-    # html = html_downloader('http://www.xdaili.cn/ipagent//freeip/getFreeIps?page=2&rows=20', None)
-
-    from html import KuaiDaiLiHtmlParser
-
-    from html import XunDaiLiJsonParser
-
-
     logger.info('why')
-    # p = KuaiDaiLiHtmlParser('A')
-    # p = XunDaiLiJsonParser('A')
-    # print(p.parse(html))
 
-    #for result in results:
-    #    print('正在检测： ',result.ip,result.port,result.anonymous,result.procotol,result.location)
-    #    print(check_liveness('http://'+str(result.ip)+':'+str(result.port)))
-    #pass

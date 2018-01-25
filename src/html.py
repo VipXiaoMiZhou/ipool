@@ -1,8 +1,6 @@
 # -*- coding: utf-8 -*-
 # !/usr/bin/env python
 
-import os
-import sys
 from lxml import etree
 from io import StringIO, BytesIO
 import json
@@ -24,12 +22,12 @@ class Singleton(object):
 
 
 class HtmlParser():
-
-    def __init__(self,name):
+    def __init__(self, name):
         self.name = name
 
     def parse(self, html):
         pass
+
 
 class IPEntity:
     ip = ''
@@ -38,7 +36,8 @@ class IPEntity:
     procotol = ''
     location = ''
 
-def create_ip_entity(ip,port,anonymous,procotol,location):
+
+def create_ip_entity(ip, port, anonymous, procotol, location):
     entity = IPEntity()
     entity.ip = ip
     entity.port = port
@@ -51,7 +50,7 @@ def create_ip_entity(ip,port,anonymous,procotol,location):
 class ChongDaiLiHtmlParser(HtmlParser):
     def parse(self, html):
         if html is None: return []
-        tree = etree.parse(StringIO(html),etree.HTMLParser())
+        tree = etree.parse(StringIO(html), etree.HTMLParser())
         tr = tree.xpath('//tbody/tr')
         results = []
         for t in tr:
@@ -62,7 +61,6 @@ class ChongDaiLiHtmlParser(HtmlParser):
             procotol = tds[3].text
             location = tds[5].text
 
-
             entity = IPEntity()
             entity.ip = ip
             entity.port = port
@@ -70,25 +68,21 @@ class ChongDaiLiHtmlParser(HtmlParser):
             entity.procotol = procotol
             entity.location = location
 
-            logger.debug('获取代理：%s %s %s %s %s',ip,port,anonymous,procotol,location)
+            logger.debug('获取代理：%s %s %s %s %s', ip, port, anonymous, procotol, location)
             results.append(entity)
         return results
 
+
 class XiCiDaiLiHtmlParser(HtmlParser):
-
     """
-    西刺代理
+    解析西刺代理
     url：http://www.xicidaili.com/wn/
-
-    有一个奇怪的问题，浏览器和wget得到的网页结构不一样
     """
-
 
     def parse(self, html):
         if html is None: return []
-
         logger.debug('正在解析西刺代理获取免费代理...')
-        tree = etree.parse(StringIO(html),etree.HTMLParser())
+        tree = etree.parse(StringIO(html), etree.HTMLParser())
         tr = tree.xpath('//table/tr')
         result = []
         for t in tr:
@@ -102,8 +96,8 @@ class XiCiDaiLiHtmlParser(HtmlParser):
             procotol = tds[5].text
             location = tds[9].text
 
-            logger.debug('获取代理：%s %s %s %s %s',ip,port,anonymous,procotol,location)
-            result.append(create_ip_entity(ip,port,anonymous,procotol,location))
+            logger.debug('获取代理：%s %s %s %s %s', ip, port, anonymous, procotol, location)
+            result.append(create_ip_entity(ip, port, anonymous, procotol, location))
         return result
 
 
@@ -111,19 +105,17 @@ class KuaiDaiLiHtmlParser(HtmlParser):
     """
     快代理
     url: https://www.kuaidaili.com/free/inha/1/
-
-    分页网页，为保证有一定数量的ip，需要多爬几页
-
     """
+
     def parse(self, html):
         if html is None or html == '': return []
-        tree = etree.parse(StringIO(html),etree.HTMLParser())
+        tree = etree.parse(StringIO(html), etree.HTMLParser())
         logger.debug('正在解析快代理获取免费ip')
         trs = tree.xpath('//table/tbody/tr')
         result = []
 
         for tr in trs:
-            if tr is None or '' == tr:continue
+            if tr is None or '' == tr: continue
             tds = tr.xpath('td')
 
             ip = tds[0].text
@@ -132,19 +124,22 @@ class KuaiDaiLiHtmlParser(HtmlParser):
             procotol = tds[3].text
             location = tds[4].text
 
-            logger.debug('获取代理：%s %s %s %s %s',ip,port,anonymous,procotol,location)
-            result.append(create_ip_entity(ip,port,anonymous,procotol,location))
+            logger.debug('获取代理：%s %s %s %s %s', ip, port, anonymous, procotol, location)
+            result.append(create_ip_entity(ip, port, anonymous, procotol, location))
         return result
 
         pass
 
 
 class XunDaiLiHtmlParser(HtmlParser):
+    """
+    讯代理
+    url:
+    """
 
     def parse(self, html):
-
         if html is None or '' == html: return []
-        tree = etree.parse(StringIO(html),etree.HTMLParser())
+        tree = etree.parse(StringIO(html), etree.HTMLParser())
         logger.debug('正在解析xun代理获取免费ip')
         trs = tree.xpath('//table/tbody/tr')
         result = []
@@ -164,19 +159,24 @@ class XunDaiLiHtmlParser(HtmlParser):
             procotol = str(procotol).strip()
             location = str(location).strip()
 
-            logger.debug('获取代理：%s %s %s %s %s',ip,port,anonymous,procotol,location)
-            result.append(create_ip_entity(ip,port,anonymous,procotol,location))
+            logger.debug('获取代理：%s %s %s %s %s', ip, port, anonymous, procotol, location)
+            result.append(create_ip_entity(ip, port, anonymous, procotol, location))
         return result
         pass
 
-class XunDaiLiJsonParser(HtmlParser):
 
-    def parse(self,json_str):
+class XunDaiLiJsonParser(HtmlParser):
+    """
+    讯代理：请求后台接口获取json格式的返回结果
+    url:  http://www.xdaili.cn/ipagent//freeip/getFreeIps?page=1&rows=10
+    """
+
+    def parse(self, json_str):
         if json_str is None or '' == json_str: return []
-        logger.debug('正在解析Xun代理获取买费ip')
+        logger.debug('正在解析Xun代理获取免费ip')
         ip_json = json.loads(json_str)
-        ip_result =  ip_json['RESULT']
-        if ip_result is None : return []
+        ip_result = ip_json['RESULT']
+        if ip_result is None: return []
         result = []
         for ip_entity in ip_result['rows']:
             ip = ip_entity['ip']
@@ -185,22 +185,22 @@ class XunDaiLiJsonParser(HtmlParser):
             procotol = ip_entity['type']
             location = ip_entity['position']
 
-            logger.debug('获取代理：%s %s %s %s %s',ip,port,anonymous,procotol,location)
-            result.append(create_ip_entity(ip,port,anonymous,procotol,location))
+            logger.debug('获取代理：%s %s %s %s %s', ip, port, anonymous, procotol, location)
+            result.append(create_ip_entity(ip, port, anonymous, procotol, location))
 
         return result
 
+
 if __name__ == '__main__':
 
-    #chong_html_path = '/home/eason/workspace/python/proxy_pool/test/conf/xundaili.html';
+    # chong_html_path = '/home/eason/workspace/python/proxy_pool/test/conf/xundaili.html';
     chong_html_path = 'index.html';
     html_content = open(chong_html_path, encoding='utf8')
 
     html_str = ''
     for line in html_content.readlines():
         html_str = html_str + str(line)
-    #parser = XiCiDaiLiHtmlParser('C')
+    # parser = XiCiDaiLiHtmlParser('C')
     parser = KuaiDaiLiHtmlParser('C')
-    #parser = XunDaiLiHtmlParser('C')
+    # parser = XunDaiLiHtmlParser('C')
     print(parser.parse(html_str))
-

@@ -1,8 +1,6 @@
 # -*- coding: utf-8 -*-
 # !/usr/bin/env python
-
 import redis
-
 
 class DBClient(object):
     def __init__(self, host, username, password, port, db):

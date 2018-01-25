@@ -1,25 +1,15 @@
 # -*- coding: utf-8 -*-
 # !/usr/bin/env python
 
-from urllib import request
-import multiprocessing
 import time
-import tools
-import random
 from threading import Thread
+
+import tools
 from Logger import Log
-from threading import current_thread
-import threading
-
-
-from html import ChongDaiLiHtmlParser
-from html import XiCiDaiLiHtmlParser
-from html import KuaiDaiLiHtmlParser
-from html import XunDaiLiHtmlParser
-from html import XunDaiLiJsonParser
-
-
 from db import RedisClient
+from html import KuaiDaiLiHtmlParser
+from html import XiCiDaiLiHtmlParser
+from html import XunDaiLiJsonParser
 
 host = 'localhost'
 username = None
