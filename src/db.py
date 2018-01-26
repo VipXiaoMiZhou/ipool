@@ -20,7 +20,7 @@ class DBClient(object):
     def connect(self):
         pass
 
-    def get(self, protocol='1', anonymous='1',amount=1):
+    def get(self, protocol='1', anonymous='1', amount=1):
         """ get a proxy address from pool
         :param protocol:  1 http  2 https
         :param anonymous: 1 透明代理 2 匿名代理 3 高匿代理
@@ -66,7 +66,7 @@ class RedisClient(DBClient):
         value = self._generate_value(ip, port)
         return self.conn.lpush(name, value)
 
-    def get(self, protocol='1', anonymous='1',amount=1):
+    def get(self, protocol='1', anonymous='1', amount=1):
         name = self._generate_name(protocol, anonymous)
         result = []
         for i in range(0, amount):
@@ -117,7 +117,7 @@ if __name__ == "__main__":
     r.put(1, 23, 312, '192.168.56.14')
     r.put(1, 23, 312, '192.168.56.14')
 
-    #print(r.get_pool_size(1, 23))
-    #print(r.get(protocol='1', amount=10, anonymous=23))
+    # print(r.get_pool_size(1, 23))
+    # print(r.get(protocol='1', amount=10, anonymous=23))
     print(r.get_pool_size(1, 23))
     print('yes')

@@ -9,6 +9,7 @@ log_dir = os.path.join(pwd, 'Logs')
 if not os.path.exists(log_dir):
     os.mkdir(log_dir)
 
+
 class Log(object):
     filename = os.path.join(log_dir, 'ipool.log')
     handler = logging.handlers.RotatingFileHandler(filename, mode='a', maxBytes=1024 * 1024, backupCount=10,

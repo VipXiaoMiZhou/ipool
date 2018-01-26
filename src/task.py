@@ -20,37 +20,38 @@ import configparser
 config = configparser.ConfigParser()
 config.read('conf/ipool.cnf')
 
-
 host = config['redis']['host']
 username = config['redis']['username']
 password = config['redis']['password']
-port= config['redis']['port']
-db= config['redis']['database']
+port = config['redis']['port']
+db = config['redis']['database']
 
-redis =  RedisClient(host=host, port=port, username=username, password=password, db=db)
+redis = RedisClient(host=host, port=port, username=username, password=password, db=db)
 
 logger = Log.getLogger(__file__)
 
-#chong = ChongDaiLiHtmlParser('A')
+# chong = ChongDaiLiHtmlParser('A')
 xici = XiCiDaiLiHtmlParser('xici_daili')
 kuai = KuaiDaiLiHtmlParser('kuai_daili')
-xun  = XunDaiLiJsonParser('xun_daili')
+xun = XunDaiLiJsonParser('xun_daili')
 
-urls = {xici.name:'http://www.xicidaili.com/nt/',kuai.name:'https://www.kuaidaili.com/free/',xun.name:'http://www.xdaili.cn/ipagent//freeip/getFreeIps?page=1&rows=10'}
-parsers = {xici.name:xici,kuai.name:kuai,xun.name:xun}
+urls = {xici.name: 'http://www.xicidaili.com/nt/', kuai.name: 'https://www.kuaidaili.com/free/',
+        xun.name: 'http://www.xdaili.cn/ipagent//freeip/getFreeIps?page=1&rows=10'}
+parsers = {xici.name: xici, kuai.name: kuai, xun.name: xun}
 
-def start(name,url):
-    if name is None or name == '' : return
-    if url is None or url == '' : return
-    logger.info('开始下载网页:%s',url)
-    html_str = tools.html_downloader(url,None)
+
+def start(name, url):
+    if name is None or name == '': return
+    if url is None or url == '': return
+    logger.info('开始下载网页:%s', url)
+    html_str = tools.html_downloader(url, None)
     p = parsers[name]
 
     if p is None:
-        logger.debug('未找到%s对应的网页解析器',name)
+        logger.debug('未找到%s对应的网页解析器', name)
         return
 
-    logger.info('%s开始解析网页',p.name)
+    logger.info('%s开始解析网页', p.name)
     ips = p.parse(html_str)
 
     for ip in ips:
@@ -61,24 +62,23 @@ def start(name,url):
         anonymous = ip.anonymous
         procotol = ip.procotol
 
-        https_proxy = str('https').lower()+'://'+host+':'+str(port)
-        http_proxy = str('http').lower()+'://'+host+':'+str(port)
+        https_proxy = str('https').lower() + '://' + host + ':' + str(port)
+        http_proxy = str('http').lower() + '://' + host + ':' + str(port)
 
         if tools.check_liveness(https_proxy):
-            logger.info('https代理%s可用',https_proxy)
-            redis.put('https','1',host,port)
+            logger.info('https代理%s可用', https_proxy)
+            redis.put('https', '1', host, port)
 
         if tools.check_liveness(http_proxy):
-            logger.info('http代理%s可用',http_proxy)
-            redis.put('http','1',host,port)
+            logger.info('http代理%s可用', http_proxy)
+            redis.put('http', '1', host, port)
 
-if __name__=='__main__':
+
+if __name__ == '__main__':
 
     while 1:
-        threads = [Thread(target=start,args=(name,url)) for name,url in urls.items()]
+        threads = [Thread(target=start, args=(name, url)) for name, url in urls.items()]
         srt = [th.start() for th in threads]
         stp = [th.join() for th in threads]
         print('over')
         time.sleep(200)
-
-
