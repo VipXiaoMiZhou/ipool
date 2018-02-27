@@ -1,5 +1,5 @@
-# !/usr/bin/env python
 # -*- coding: utf-8 -*-
+#!/usr/local/bin/python3.6
 
 __author__ = 'XiaoMiZhou'
 

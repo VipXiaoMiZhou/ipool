@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 #!/usr/local/bin/python3.6
 
 __author__ = 'XiaoMiZhou'
@@ -54,14 +55,13 @@ def get_ip(procotol, anonymous, amount):
         return resp(1, 'ipool没有ip了，稍后再来吧！！', [])
 
     results = [entity.decode('utf-8') for entity in ips]
-    return resp(0, '你怎么还在写程序！！', results)
+    return resp(0, '', results)
 
 
 def main():
+    run(host=server_host, port=server_port)
     pass
 
 
 if __name__ == '__main__':
     main()
-    run(host=server_host, port=server_port)
-    pass
