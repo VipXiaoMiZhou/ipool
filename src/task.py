@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-#!/usr/local/bin/python3.6
+# !/usr/local/bin/python3.6
 
 __author__ = 'XiaoMiZhou'
 
@@ -64,7 +64,7 @@ def do_start(name, url):
         logger.debug('未找到%s对应的网页解析器', name)
         return
 
-    logger.info('开始解析网页', p.name)
+    logger.info('开始解析网页')
 
     ips = p.parse(html_str)
 
@@ -97,6 +97,7 @@ def main():
         time.sleep(200)
 
     pass
+
 
 if __name__ == '__main__':
     main()
