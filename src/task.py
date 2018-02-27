@@ -47,7 +47,7 @@ def do_crawl(url, proxy=None):
     :param proxy: 代理
     :return: 网页
     """
-    if url is None or name == '': return
+    if url is None or url == '': return
     logger.info('开始抓取网页:%s', url)
     return tools.html_downloader(url, proxy)
 
