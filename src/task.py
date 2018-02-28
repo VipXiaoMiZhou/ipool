@@ -89,7 +89,7 @@ def do_start(name, url):
 
 
 def main():
-    while 1:
+    while True:
         threads = [Thread(target=do_start, args=(name, url)) for name, url in urls.items()]
         srt = [th.start() for th in threads]
         stp = [th.join() for th in threads]
