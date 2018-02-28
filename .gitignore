@@ -2,6 +2,7 @@
 .idea
 *.xml
 *.log.*
+*.log
 *.pyc
 Logs/*
 
